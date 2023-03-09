@@ -1,10 +1,15 @@
 <?php
 
 use App\Http\Controllers\Auth\MeController;
+use App\Http\Controllers\CashController;
 use Illuminate\Support\Facades\{Auth, Route};
 
-Auth::loginUsingId('b8a670a2-3dc4-4ecd-9eaf-13139a6b8a2f');
+Auth::loginUsingId('b5b51a30-7932-4995-9a72-f696465f117b');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', MeController::class);
+
+    Route::prefix('cash')->group(function () {
+        Route::post('create', [CashController::class, 'store']);
+    });
 });
