@@ -9,6 +9,25 @@ use Illuminate\Support\Str;
 
 class CashController extends Controller
 {
+    public function index()
+    {
+        $debit = Auth::user()
+            ->cashes()
+            ->whereBetween('when', [now()->firstOfMonth(), now()])
+            ->where('amount', '>=', 0)->get('amount')
+            ->sum('amount');
+
+        $credit = Auth::user()
+            ->cashes()
+            ->whereBetween('when', [now()->firstOfMonth(), now()])
+            ->where('amount', '<', 0)
+            ->get('amount')
+            ->sum('amount');
+
+        $balances = Auth::user()->cashes()->get('amount')->sum('amount');
+        return response()->json(compact('debit', 'credit', 'balances'));
+    }
+
     public function store(Request $request)
     {
         $auth_user = auth()->user();
