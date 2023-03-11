@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cash;
+use App\Http\Resources\CashResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -25,7 +25,17 @@ class CashController extends Controller
             ->sum('amount');
 
         $balances = Auth::user()->cashes()->get('amount')->sum('amount');
-        return response()->json(compact('debit', 'credit', 'balances'));
+
+        $transactions = Auth::user()->cashes()->whereBetween('when', [now()->firstOfMonth(), now()])->latest()->get();
+
+        $response = [
+            "balances" => formatPrice($balances),
+            "debit" => formatPrice($debit),
+            "credit" => formatPrice($credit),
+            "transactions" => CashResource::collection($transactions),
+        ];
+
+        return response()->json($response, 200);
     }
 
     public function store(Request $request)

@@ -10,6 +10,7 @@ class Cash extends Model
 {
     use HasFactory;
     protected $guarded = ["id"];
+    protected $dates = ["when"];
     protected $keyType = 'string';
 
     protected static function boot()
