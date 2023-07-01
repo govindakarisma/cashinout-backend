@@ -9,15 +9,6 @@ use Illuminate\Support\Str;
 class Cash extends Model
 {
     use HasFactory;
-    protected $guarded = ["id"];
-    protected $dates = ["when"];
-    protected $keyType = 'string';
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid();;
-        });
-    }
+    protected $fillable = ["name", "slug", "when", "amount", "description"];
 }

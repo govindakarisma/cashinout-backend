@@ -14,7 +14,8 @@ class CashController extends Controller
         $debit = Auth::user()
             ->cashes()
             ->whereBetween('when', [now()->firstOfMonth(), now()])
-            ->where('amount', '>=', 0)->get('amount')
+            ->where('amount', '>=', 0)
+            ->get('amount')
             ->sum('amount');
 
         $credit = Auth::user()
@@ -25,23 +26,24 @@ class CashController extends Controller
             ->sum('amount');
 
         $balances = Auth::user()->cashes()->get('amount')->sum('amount');
+        return $debit;
 
-        $transactions = Auth::user()->cashes()->whereBetween('when', [now()->firstOfMonth(), now()])->latest()->get();
 
-        $response = [
-            "balances" => formatPrice($balances),
-            "debit" => formatPrice($debit),
-            "credit" => formatPrice($credit),
-            "transactions" => CashResource::collection($transactions),
-        ];
 
-        return response()->json($response, 200);
+        // $transactions = Auth::user()->cashes()->whereBetween('when', [now()->firstOfMonth(), now()])->latest()->get();
+
+        // $response = [
+        //     "balances" => formatPrice($balances),
+        //     "debit" => formatPrice($debit),
+        //     "credit" => formatPrice($credit),
+        //     "transactions" => CashResource::collection($transactions),
+        // ];
+
+        // return response()->json($response, 200);
     }
 
     public function store(Request $request)
     {
-        $auth_user = auth()->user();
-
         $request->validate([
             "name" => "required",
             "amount" => "required|numeric"

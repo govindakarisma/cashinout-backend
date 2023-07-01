@@ -14,9 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cashes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->id('id');
+            $table->foreignId('user_id');
             $table->string('name');
             $table->string('slug');
             $table->string('description')->nullable();
