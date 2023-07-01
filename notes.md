@@ -73,3 +73,59 @@ Data ditampilkan berdasakan user_id yang sama dengan id user authenticated.
     ```php
     ->get('amount')->sum('amount')
     ```
+
+## 6. Menampilkan Transaksi menggunakan Laravel Resource
+
+1. Membuat format number
+
+    Membuat helper function dengan membuat file `helper.php` pada `App`, lalu mengisinya dengan function.
+
+    ```php
+    function formatPrice($value)
+    {
+      return str_replace(',', '.', number_format($value));
+    }
+    ```
+
+    Lalu daftarkan `helper.php` pada `composer.json`
+
+    ```json
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        /** Tambahkan script seperti dibawah */
+        "files": [
+            "app/helpers.php"
+        ]
+    }
+    ```
+
+    Kemudian jalankan perintah pada command line dengan perintah `composer dump-autoload` agar function pada helper dapat dipanggil secara global
+
+2. Make Cash Resource
+
+    Menggunakan function `format()` agar waktu mudah dibaca. Namun sebelum menggunakan function tersebut, kolom yang menyimpan tanggal dan waktu eloquent laravel menganggapnya adalah sebuah `string` bukan `datetime`, oleh karena itu harus mendaftarkan pada model dengan `protected $guarded = ['when']` agar dianggap sebagai objek DateTime
+
+## 7. Setup Frontend
+
+Kunjungi `config\cors.php` untuk menambahkan endpoint yang dapat diakses aplikasi frontend dan `supports_credentials` menjadi `true` untuk bisa melakukan auth melalui frontend.
+
+```php
+  return [
+    'paths' => [
+        'api/*',
+        'sanctum/csrf-cookie',
+        'register',
+        'login'
+    ],
+    /** ...Code lainnya */
+    'supports_credentials' => true,
+  ]
+```
+
+Jangan lupa untuk memasukkan `SESSION_DOAMIN=localhost` dan `SANCTUM_STATEFUL_DOMAINS=localhost:8080` _(sesuaikan dengan hostname dan port frontend)_ pada file `.env`
+
+Tahapan ini akan dilanjutkan pada project vuejs cashinout
